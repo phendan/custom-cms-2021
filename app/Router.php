@@ -1,31 +1,36 @@
 <?php
 
+namespace App;
+
+use App\Controllers\HomeController;
+use App\Controllers\NotFoundController;
+
 class Router {
-    private $controller = 'HomeController';
+    private $controller = HomeController::class;
     private $method = 'index';
-    private $params;
+    private $params = [];
 
     public function __construct()
     {
         $url = $this->parseUrl();
+        if (!$url) return;
 
-        $requestedController = ucfirst($url[0] ?? '') . 'Controller';
-        $controllerPath = "../app/Controllers/{$requestedController}.php";
+        $requestedController = 'App\\Controllers\\' . ucfirst($url[0]) . 'Controller';
 
-        if ($url && file_exists($controllerPath)) {
-            require_once $controllerPath;
-            $this->controller = $requestedController;
-            unset($url[0]);
-        } else {
-            require_once "../app/Controllers/{$this->controller}.php";
+        if (!class_exists($requestedController)) {
+            $this->controller = NotFoundController::class;
+            return;
         }
+
+        $this->controller = $requestedController;
+        unset($url[0]);
 
         if (isset($url[1]) && method_exists($this->controller, $url[1])) {
             $this->method = $url[1];
             unset($url[1]);
         }
 
-        $this->params = $url ? array_values($url) : [];
+        $this->params = array_values($url);
     }
 
     private function parseUrl()
