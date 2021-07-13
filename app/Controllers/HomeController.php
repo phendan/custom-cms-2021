@@ -1,15 +1,15 @@
 <?php
 
+namespace App\Controllers;
+
 require_once '../app/Models/Database.php';
+
+use App\Models\Database;
+use App\Models\User;
 
 class HomeController {
     public function index()
     {
-        $db = new Database;
-
-        // $userQuery = $db->table('users')->where('id', '=', 1);
-        // if ($userQuery->count()) {
-        //     //
-        // }
+        echo 'home';
     }
 }
