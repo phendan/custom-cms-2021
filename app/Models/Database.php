@@ -9,7 +9,7 @@ class Database {
     private $host = '127.0.0.1';
     private $username = 'root';
     private $password = '';
-    private $dbName = '';
+    private $dbName = 'cms';
 
     private $pdo;
     private $table;
@@ -17,16 +17,16 @@ class Database {
 
     public function __construct()
     {
-        // try {
-        //     $this->pdo = new PDO(
-        //         "mysql:host={$this->host};dbName={$this->dbName}",
-        //         $this->username,
-        //         $this->password
-        //     );
-        //     $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        // } catch (Exception $e) {
-        //     die($e->getMessage());
-        // }
+        try {
+            $this->pdo = new PDO(
+                "mysql:host={$this->host};dbname={$this->dbName}",
+                $this->username,
+                $this->password
+            );
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (Exception $e) {
+            die($e->getMessage());
+        }
     }
 
     public function table(string $table)
@@ -68,6 +68,7 @@ class Database {
 
     public function last()
     {
-        return end($this->results());
+        $results = $this->results();
+        return end($results);
     }
 }
