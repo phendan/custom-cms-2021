@@ -2,15 +2,11 @@
 
 namespace App\Models;
 
+use App\Config;
 use PDO;
 use Exception;
 
 class Database {
-    private $host = '127.0.0.1';
-    private $username = 'root';
-    private $password = '';
-    private $dbName = 'cms';
-
     private $pdo;
     private $table;
     private $statement;
@@ -19,9 +15,9 @@ class Database {
     {
         try {
             $this->pdo = new PDO(
-                "mysql:host={$this->host};dbname={$this->dbName}",
-                $this->username,
-                $this->password
+                'mysql:host=' . Config::get('database.host') . ';dbname=' . Config::get('database.dbName'),
+                Config::get('database.username'),
+                Config::get('database.password')
             );
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (Exception $e) {
@@ -49,6 +45,17 @@ class Database {
         $this->query("SELECT * FROM {$this->table} WHERE {$field} {$operator} ?", [ $value ]);
 
         return $this;
+    }
+
+    // Enables insertion as associative array -> ['field_in_table' => 'value']
+    public function store(array $data)
+    {
+        $columns = implode(', ', array_keys($data));
+        $placeholders = rtrim(str_repeat('?,', count($data)), ',');
+        $values = array_values($data);
+
+        $sql = "INSERT INTO {$this->table} ({$columns}) VALUES({$placeholders})";
+        $this->query($sql, $values);
     }
 
     public function count()

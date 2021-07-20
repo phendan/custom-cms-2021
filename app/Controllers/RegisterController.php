@@ -2,24 +2,19 @@
 
 namespace App\Controllers;
 
-use App\View;
 use App\Models\User;
-use App\Models\Database;
 use App\Models\FormValidation;
+use App\Interfaces\BaseController;
 
-class RegisterController {
+class RegisterController extends BaseController {
     public function index()
     {
-        $view = new View;
-
         if (!empty($_POST)) {
             $userData = array_map(function ($element) {
                 return trim($element);
             }, $_POST);
 
-            $db = new Database;
-
-            $validation = new FormValidation($db, $userData);
+            $validation = new FormValidation($this->db, $userData);
 
             $validation->setRules([
                 'firstName' => 'required|min:2|max:32',
@@ -32,20 +27,21 @@ class RegisterController {
             $validation->validate();
 
             if ($validation->fails()) {
-                $view->render('register', [
+                $this->view->render('register', [
                     'errors' => $validation->getErrors()
                 ]);
             } else {
-                $user = new User($db);
+                $user = new User($this->db);
                 $user->register(
                     $userData['firstName'],
                     $userData['lastName'],
                     $userData['email'],
                     $userData['password']
                 );
+                $this->redirect('/');
             }
         }
 
-        $view->render('register');
+        $this->view->render('register');
     }
 }

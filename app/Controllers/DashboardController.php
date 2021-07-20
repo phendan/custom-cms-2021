@@ -5,9 +5,10 @@ namespace App\Controllers;
 use App\Models\User;
 use App\Interfaces\BaseController;
 
-class HomeController extends BaseController {
+class DashboardController extends BaseController {
     public function index()
     {
-        echo 'home';
+        echo 'dashboard';
+        var_dump($_SESSION);
     }
 }

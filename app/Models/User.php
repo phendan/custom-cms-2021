@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Exception;
+
 class User {
     private $db;
     private $id;
@@ -27,7 +29,11 @@ class User {
             foreach ($userData as $field => $value) {
                 $this->{$field} = $value;
             }
+
+            return true;
         }
+
+        return false;
     }
 
     public function register($firstName, $lastName, $email, $password)
@@ -40,9 +46,20 @@ class User {
             'joined' => time()
         ];
 
-        var_dump($userData);
+        $this->db->table('users')->store($userData);
+    }
 
-        // insert into DB
+    public function login($email, $password)
+    {
+        if (!$this->find($email)) {
+            throw new Exception('Email or password was not correct.');
+        }
+
+        if (!password_verify($password, $this->password)) {
+            throw new Exception('Email or password was not correct.');
+        }
+
+        $_SESSION['userId'] = $this->id;
     }
 
     public function getId()
