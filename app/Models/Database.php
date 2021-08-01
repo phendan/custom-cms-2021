@@ -9,6 +9,7 @@ use Exception;
 class Database {
     private $pdo;
     private $table;
+    private $joinTable;
     private $statement;
 
     public function __construct()
@@ -40,9 +41,31 @@ class Database {
         return $this;
     }
 
+    public function join(string $table)
+    {
+        $this->joinTable = $table;
+    }
+
+    public function on(array|string ...$columns)
+    {
+        if (is_array($columns[0])) $columns = $columns[0];
+        $this->joinColumns = $columns;
+    }
+
     public function where(string $field, string $operator, string|int $value)
     {
-        $this->query("SELECT * FROM {$this->table} WHERE {$field} {$operator} ?", [ $value ]);
+        if (!isset($this->joinTable)) {
+            $this->query("SELECT * FROM {$this->table} WHERE {$field} {$operator} ?", [ $value ]);
+            return $this;
+        }
+
+        [$leftColumn, $rightColumn] = $this->joinColumns;
+        $this->query("
+            SELECT * FROM {$this->table}
+            LEFT JOIN {$this->joinTable}
+            ON {$this->table}.{$leftColumn} = ${$this->joinTable}.${$rightColumn}
+            WHERE {$field} {$operator} ?
+        ", [ $value ]);
 
         return $this;
     }
