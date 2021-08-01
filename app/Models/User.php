@@ -5,7 +5,8 @@ namespace App\Models;
 use Exception;
 use App\Models\Session;
 
-class User {
+class User
+{
     private $db;
     private $id;
     private $email;
@@ -71,7 +72,11 @@ class User {
 
     public function getRole()
     {
-        return $this->db->table('roles')->where('id', '=', $this->role_id)->first()['name'];
+        if (isset($this->role)) {
+            return $this->role;
+        }
+        $this->role = $this->db->table('roles')->where('id', '=', $this->role_id)->first()['name'];
+        return $this->role;
     }
 
     public function logout()
