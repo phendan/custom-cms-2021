@@ -7,4 +7,20 @@
     <title>CMS</title>
 </head>
 <body>
-    <header></header>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="<?=$root?>/">Home</a></li>
+                <?php if (!$user->isLoggedIn()): ?>
+                    <li><a href="<?=$root?>/login">Login</a></li>
+                    <li><a href="<?=$root?>/register">Register</a></li>
+                <?php else: ?>
+                    <li><a href="<?=$root?>/logout">Logout</a></li>
+                <?php endif; ?>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="messages">
+        <?php echo $session::flash('message'); ?>
+    </div>

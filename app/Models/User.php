@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Exception;
+use App\Models\Session;
 
 class User {
     private $db;
@@ -59,11 +60,20 @@ class User {
             throw new Exception('Email or password was not correct.');
         }
 
-        $_SESSION['userId'] = $this->id;
+        Session::set('userId', $this->id);
+    }
+
+    public function isLoggedIn()
+    {
+        return Session::exists('userId');
+    }
+    public function logout()
+    {
+        Session::delete('userId');
     }
 
     public function getId()
     {
-        return $this->id;
+        return $this->id ?? Session::get('userId');
     }
 }
