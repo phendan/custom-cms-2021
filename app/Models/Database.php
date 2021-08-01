@@ -47,6 +47,13 @@ class Database {
         return $this;
     }
 
+    public function getAll()
+    {
+        $this->query("SELECT * FROM {$this->table}");
+
+        return $this->results();
+    }
+
     // Enables insertion as associative array -> ['field_in_table' => 'value']
     public function store(array $data)
     {
