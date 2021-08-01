@@ -13,6 +13,7 @@ class User {
     private $last_name;
     private $password;
     private $joined;
+    private $role_id;
 
     public function __construct(Database $db)
     {
@@ -67,6 +68,12 @@ class User {
     {
         return Session::exists('userId');
     }
+
+    public function getRole()
+    {
+        return $this->db->table('roles')->where('id', '=', $this->role_id)->first()['name'];
+    }
+
     public function logout()
     {
         Session::delete('userId');
