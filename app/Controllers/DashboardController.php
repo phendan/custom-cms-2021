@@ -2,13 +2,25 @@
 
 namespace App\Controllers;
 
-use App\Models\User;
 use App\Interfaces\BaseController;
+use App\Models\Session;
+use App\Request;
+use App\Traits\RouteGuards\UserOnly;
 
 class DashboardController extends BaseController {
-    public function index()
+    use UserOnly;
+
+    public function index(Request $request)
     {
-        echo 'dashboard';
-        var_dump($_SESSION);
+        // var_dump($this->user->getRole());
+        // echo '<pre>', var_dump($this->user), '</pre>';
+        if ($this->user->getRole() === 'admin') {
+            $allUsers = $this->db->table('users')->getAll();
+            return $this->renderView('dashboard', [
+                'allUsers' => $allUsers
+            ]);
+        }
+
+        $this->renderView('dashboard');
     }
 }

@@ -4,10 +4,13 @@ namespace App\Controllers;
 
 use App\Models\User;
 use App\Interfaces\BaseController;
+use App\Request;
 
 class HomeController extends BaseController {
-    public function index()
+    public function index(Request $request)
     {
-        echo 'home';
+        $this->renderView('home', [
+            'test' => '<script>alert("test")</script>'
+        ]);
     }
 }

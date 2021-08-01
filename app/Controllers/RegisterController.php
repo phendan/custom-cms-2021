@@ -2,46 +2,49 @@
 
 namespace App\Controllers;
 
-use App\Models\User;
 use App\Models\FormValidation;
 use App\Interfaces\BaseController;
+use App\Models\Session;
+use App\Request;
+use App\Traits\RouteGuards\GuestOnly;
 
 class RegisterController extends BaseController {
-    public function index()
+    use GuestOnly;
+
+    public function index(Request $request)
     {
-        if (!empty($_POST)) {
-            $userData = array_map(function ($element) {
-                return trim($element);
-            }, $_POST);
-
-            $validation = new FormValidation($this->db, $userData);
-
-            $validation->setRules([
-                'firstName' => 'required|min:2|max:32',
-                'lastName' => 'required|min:2|max:32',
-                'email' => 'required|email|available:users',
-                'password' => 'required|min:5',
-                'passwordAgain' => 'required|matches:password',
-            ]);
-
-            $validation->validate();
-
-            if ($validation->fails()) {
-                $this->view->render('register', [
-                    'errors' => $validation->getErrors()
-                ]);
-            } else {
-                $user = new User($this->db);
-                $user->register(
-                    $userData['firstName'],
-                    $userData['lastName'],
-                    $userData['email'],
-                    $userData['password']
-                );
-                $this->redirect('/');
-            }
+        if (!$request->hasInput()) {
+            return $this->renderView('register');
         }
 
-        $this->view->render('register');
+        $userData = $request->getInput();
+        $validation = new FormValidation($this->db, $userData);
+
+        $validation->setRules([
+            'firstName' => 'required|min:2|max:32',
+            'lastName' => 'required|min:2|max:32',
+            'email' => 'required|email|available:users',
+            'password' => 'required|min:5',
+            'passwordAgain' => 'required|matches:password',
+        ]);
+
+        $validation->validate();
+
+        if ($validation->fails()) {
+            return $this->renderView('register', [
+                'errors' => $validation->getErrors()
+            ]);
+        }
+
+        $this->user->register(
+            ...$request->only(
+                'firstName',
+                'lastName',
+                'email',
+                'password'
+            )
+        );
+        Session::flash('message', 'Your account has been successfully created!');
+        $this->redirect('/');
     }
 }
