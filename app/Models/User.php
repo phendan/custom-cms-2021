@@ -14,6 +14,7 @@ class User {
     private $password;
     private $joined;
     private $role_id;
+    private $role;
 
     public function __construct(Database $db)
     {
@@ -71,7 +72,12 @@ class User {
 
     public function getRole()
     {
-        return $this->db->table('roles')->where('id', '=', $this->role_id)->first()['name'];
+        if (isset($this->role)) {
+            return $this->role;
+        }
+
+        $this->role = $this->db->table('roles')->where('id', '=', $this->role_id)->first()['name'];
+        return $this->role;
     }
 
     public function logout()
@@ -82,5 +88,10 @@ class User {
     public function getId()
     {
         return $this->id ?? Session::get('userId');
+    }
+
+    public function getFullName()
+    {
+        return $this->first_name . ' ' . $this->last_name;
     }
 }

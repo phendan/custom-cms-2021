@@ -5,12 +5,14 @@ namespace App;
 class Request {
     private $getParams;
     private $postParams;
+    private $fileParams;
     private $headers;
 
     public function __construct(array $getParams)
     {
         $this->getParams = $getParams;
         $this->postParams = $_POST;
+        $this->fileParams = $_FILES;
     }
 
     public function hasInput()
@@ -18,9 +20,24 @@ class Request {
         return !empty($this->postParams) || !empty($this->getParams);
     }
 
+    public function hasFile($file = null)
+    {
+        if (isset($file)) {
+            return isset($this->fileParams[$file]);
+        }
+
+        return !empty($this->fileParams);
+    }
+
     public function getInput()
     {
-        return $this->sanitize(array_merge($this->getParams, $this->postParams));
+        return array_merge(
+            $this->sanitize(array_merge(
+                $this->getParams,
+                $this->postParams,
+            )),
+            $this->fileParams
+        );
     }
 
     public function only(array|string ...$params)
