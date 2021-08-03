@@ -6,6 +6,7 @@ use App\Models\FormValidation;
 use App\Interfaces\BaseController;
 use App\Models\Session;
 use App\Request;
+use App\Models\Email;
 use App\Traits\RouteGuards\GuestOnly;
 
 class RegisterController extends BaseController {
@@ -44,6 +45,8 @@ class RegisterController extends BaseController {
                 'password'
             )
         );
+        $email = new Email;
+        // $email->send($request->only('email'), 'Registration', 'You have been successfully registered.');
         Session::flash('message', 'Your account has been successfully created!');
         $this->redirect('/');
     }

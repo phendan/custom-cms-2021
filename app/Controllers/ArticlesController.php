@@ -16,7 +16,7 @@ class ArticlesController extends BaseController {
         [$slug] = $request->getInput();
         $article = new Article($this->db);
 
-        if(!$article->find($slug)) {
+        if (!$article->find($slug)) {
             return $this->redirect('/articles');
         }
 

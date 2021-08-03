@@ -15,6 +15,7 @@ class Article {
     private $body;
     private $created;
     private $author_id;
+    private $image;
 
     public function __construct(Database $db)
     {
@@ -24,7 +25,8 @@ class Article {
     public function find($identifier)
     {
         $field = is_numeric($identifier) ? 'id' : 'slug';
-        $articleQuery = $this->db->table('articles')->where($field, '=', $identifier);
+        // $articleQuery = $this->db->table('articles')->where($field, '=', $identifier);
+        $articleQuery = $this->db->query("SELECT * FROM articles LEFT JOIN articles_images ON articles_images.article_id = articles.id WHERE {$field} = ?", [ $identifier ]);
 
         if ($articleQuery->count()) {
             $articleData = $articleQuery->first();
