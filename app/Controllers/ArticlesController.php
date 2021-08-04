@@ -20,6 +20,12 @@ class ArticlesController extends BaseController {
             return $this->redirect('/articles');
         }
 
+        if ($request->expectsJson()) {
+            $this->renderJson(200, [
+                'article' => $article->getArray()
+            ]);
+        }
+
         $this->renderView('articles/slug', [
             'article' => $article
         ]);

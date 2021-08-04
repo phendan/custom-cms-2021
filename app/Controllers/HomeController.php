@@ -10,8 +10,8 @@ use App\Interfaces\BaseController;
 class HomeController extends BaseController {
     public function index(Request $request)
     {
-        $email = new Email;
-        $email->send('custom.cms.dummy@gmail.com', 'Registration', 'You have been successfully registered.');
+        // $email = new Email;
+        // $email->send('custom.cms.dummy@gmail.com', 'Registration', 'You have been successfully registered.')
 
         $this->renderView('home', [
             'test' => '<script>alert("test")</script>'

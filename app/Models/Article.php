@@ -71,9 +71,19 @@ class Article {
         }
     }
 
+    public function getId()
+    {
+        return (int) $this->id;
+    }
+
     public function getTitle()
     {
         return $this->title;
+    }
+
+    public function getSlug()
+    {
+        return $this->slug;
     }
 
     public function getBody()
@@ -96,5 +106,16 @@ class Article {
     public function getImage()
     {
         return $this->image;
+    }
+
+    public function getArray()
+    {
+        return [
+            'id' => $this->getId(),
+            'title' => $this->getTitle(),
+            'slug' => $this->getSlug(),
+            'body' => $this->getBody(),
+            'image' => $this->getImage()
+        ];
     }
 }

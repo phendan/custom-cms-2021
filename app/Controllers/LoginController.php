@@ -14,6 +14,8 @@ class LoginController extends BaseController {
 
     public function index(Request $request)
     {
+        var_dump($request->getMethod());
+
         if (!$request->hasInput()) {
             return $this->renderView('login');
         }
