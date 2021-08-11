@@ -3,22 +3,18 @@
 namespace App;
 
 use App\Config;
+use App\Models\Sanitization;
 use App\Models\Session;
-use App\Models\Str;
 
 class View {
     public function render($view, array $data = [])
     {
-        $data['session'] = Session::class;
-        $data['root'] = Config::get('root');
+        $session = Session::class;
+        $root = Config::get('root');
 
-        $data = array_map(function ($element) {
-            if (is_string($element)) {
-                return Str::sanitize($element);
-            }
+        $data = Sanitization::sanitize($data);
 
-            return $element;
-        }, $data);
+        // echo '<pre>', var_dump($data), '</pre>';
 
         extract($data);
 

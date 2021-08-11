@@ -27,7 +27,10 @@ class ArticlesController extends BaseController {
         }
 
         $this->renderView('articles/slug', [
-            'article' => $article
+            'article' => $article,
+            'input' => [
+                '<script>alert("test")</script>'
+            ]
         ]);
     }
 }
