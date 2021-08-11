@@ -13,9 +13,6 @@ class View {
         $root = Config::get('root');
 
         $data = Sanitization::sanitize($data);
-
-        // echo '<pre>', var_dump($data), '</pre>';
-
         extract($data);
 
         require_once '../app/Views/partials/header.php';
